@@ -40,9 +40,12 @@ const App = () => {
     }
   }, []);
 
-  const onFlip = (data: number) => {
-    setCurrentPage(data + 1);
-  };
+  const onFlip = useCallback(() => {
+    if (bookRef && bookRef.current) {
+      // @ts-ignore
+      setCurrentPage(bookRef.current.pageFlip().getCurrentPageIndex() + 1);
+    }
+  }, []);
 
   const handlePrevBtnClick = useCallback(() => {
     if (bookRef && bookRef.current) {
@@ -59,14 +62,14 @@ const App = () => {
   }, []);
 
   return (
-    <main className="flex flex-col gap-22 justify-center h-full py-120 items-center overflow-hidden bg-[#EFEFEF]">
-      <h1 className="font-bold text-left text-24 w-320 md:w-[1200px]">
+    <main className="flex flex-col gap-22 md:gap-28 justify-start md:justify-center min-h-screen md:py-60 py-30 items-center overflow-hidden bg-[#D4D4D4]">
+      <h1 className="font-bold text-left text-24 md:text-36 w-320 md:w-[1194px]">
         I.M.LAB. 제품 통합 카달로그
       </h1>
-      <section className="w-320 md:w-[1200px] flex justify-between">
+      <section className="w-320 md:w-[1194px] flex justify-between">
         <button
           type="button"
-          className="text-12 leading-[160%] tracking-[-0.2px] text-white px-10 py-4 bg-imlab-default rounded-[8px]"
+          className="text-16 md:text-20 md:p-12 font-bold leading-[160%] tracking-[-0.2px] text-white px-10 py-4 bg-[#D84231] rounded-[8px]"
         >
           <a
             href="https://firebasestorage.googleapis.com/v0/b/imlab-web-homepage.appspot.com/o/pdf%2F%EC%95%84%EC%9D%B4%EC%97%A0%EB%9E%A9_%EB%94%94%EC%A7%80%ED%84%B8%EC%B9%B4%EB%8B%AC%EB%A1%9C%EA%B7%B8.pdf?alt=media&token=29fda917-c2f1-4d31-9d8f-91d507a344f2"
@@ -82,9 +85,13 @@ const App = () => {
             type="button"
             onClick={handlePrevBtnClick}
           >
-            <img src={prevBtn} alt="previous page button" />
+            <img
+              src={prevBtn}
+              className="w-25 md:w-40 h-25 md:h-40"
+              alt="previous page button"
+            />
           </button>
-          <div className="text-14 leading-[160%] tracking-[-0.2px]">
+          <div className="text-14 md:text-20 font-semibold leading-[160%] tracking-[-0.2px]">
             {currentPage} / {totalPages}
           </div>
           <button
@@ -92,18 +99,22 @@ const App = () => {
             type="button"
             onClick={handleNextBtnClick}
           >
-            <img src={nextBtn} alt="next page button" />
+            <img
+              src={nextBtn}
+              className="w-25 md:w-40 h-25 md:h-40"
+              alt="next page button"
+            />
           </button>
         </div>
       </section>
-      <section className="border-2 w-320 md:w-[1200px] overflow-hidden h-fit flex items-center justify-center">
+      <section className="border-2 w-320 md:w-[1194px] overflow-hidden h-fit flex items-center justify-center">
         {/* @ts-ignore */}
         <HTMLFlipBook
           width={isMobile ? 320 : 595}
           height={isMobile ? 453 : 842}
           showCover
           mobileScrollSupport
-          onFlip={e => onFlip(e.data)}
+          onFlip={onFlip}
           ref={bookRef}
           onInit={onInit}
         >
